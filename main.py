@@ -2,6 +2,9 @@ import torch
 from models.mlp import SimpleMLP
 from analysis.flopCounter import count_mlp_macs, macs_to_flops
 import time
+from analysis.hardware_estimates import compute_flop_rate_cpu, compute_flop_rate_gpu, estimate_runtime
+from models.hardware_specs import cpu_specs, gpu_specs, m4_pro_specs
+
 
 #define model and dummy input for model
 model = SimpleMLP()
@@ -37,3 +40,13 @@ print("FLOPs per sample:", flops / batch_size)
 #these FLOPs are "workload" estimates that
 #will be combined with assumed hardware capabilities
 #to estimate execution time and energy of different architectures
+
+
+
+cpu_rate = compute_flop_rate_cpu(cpu_specs)
+gpu_rate = compute_flop_rate_gpu(gpu_specs)
+apple_m4_rate = compute_flop_rate_cpu(m4_pro_specs)
+
+print("CPU estimate: (Intel i9 9900k)", estimate_runtime(flops, cpu_rate))
+print("GPU estimate: (NVIDIA GeForce RTX 5070Ti)", estimate_runtime(flops, gpu_rate))
+print("MacBook estimate: (Apple M4 Pro Chip)", estimate_runtime(flops, apple_m4_rate))

@@ -1,3 +1,5 @@
+
+
 def count_linear_macs(layer, batch_size=1):
     """
     counts the number of multipy-accumulate operations (MACs)
