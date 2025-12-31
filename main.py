@@ -37,16 +37,17 @@ print("MACs:", macs)
 print("FLOPs:", flops)
 print("FLOPs per sample:", flops / batch_size)
 
-#these FLOPs are "workload" estimates that
-#will be combined with assumed hardware capabilities
-#to estimate execution time and energy of different architectures
-
-
+#these FLOPs are "workload" estimates that will be combined with more realistic
+#hardware capabilities to estimate execution time and energy of different architectures
 
 cpu_rate = compute_flop_rate_cpu(cpu_specs)
-gpu_rate = compute_flop_rate_gpu(gpu_specs)
+gpu_rate_fp16 = compute_flop_rate_gpu(gpu_specs, precision="fp16")
+gpu_rate_fp32 = compute_flop_rate_gpu(gpu_specs, precision="fp32")
+gpu_rate_fp64 = compute_flop_rate_gpu(gpu_specs, precision="fp64")
 apple_m4_rate = compute_flop_rate_cpu(m4_pro_specs)
 
-print("CPU estimate: (Intel i9 9900k)", estimate_runtime(flops, cpu_rate))
-print("GPU estimate: (NVIDIA GeForce RTX 5070Ti)", estimate_runtime(flops, gpu_rate))
-print("MacBook estimate: (Apple M4 Pro Chip)", estimate_runtime(flops, apple_m4_rate))
+print("CPU estimate: (Intel i9 9900k)", estimate_runtime(flops, cpu_rate), "seconds")
+print("GPU estimate FP16: (NVIDIA GeForce RTX 4070 Ti)", estimate_runtime(flops, gpu_rate_fp16), "seconds")
+print("GPU estimate FP32: (NVIDIA GeForce RTX 4070 Ti)", estimate_runtime(flops, gpu_rate_fp32), "seconds")
+print("GPU estimate FP64: (NVIDIA GeForce RTX 4070 Ti)", estimate_runtime(flops, gpu_rate_fp64), "seconds")
+print("MacBook estimate: (Apple M4 Pro Chip)", estimate_runtime(flops, apple_m4_rate), "seconds")
