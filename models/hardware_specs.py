@@ -29,5 +29,5 @@ m4_pro_specs = {
     "frequency": 2.6e9,
     "flops_per_cycle": 24,  # rough FPC per core, fused-multiply-add
     "core_count": 10,  # 10 performance cores
-    "efficiency": 0.65
+    "efficiency": 0.65 
 }
