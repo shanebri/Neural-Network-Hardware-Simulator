@@ -1,6 +1,6 @@
 import torch
 from models.mlp import SimpleMLP
-from analysis.flopCounter import count_mlp_macs, macs_to_flops
+from analysis.flopCounter import count_mlp_macs, macs_to_flops, ops_breakdown_to_flops
 import time
 from analysis.hardware_estimates import compute_flop_rate_cpu, compute_flop_rate_gpu, estimate_runtime
 from models.hardware_specs import cpu_specs, gpu_specs, m4_pro_specs
@@ -29,9 +29,15 @@ end = time.perf_counter()
 print("Output shape:", y.shape)
 print("Forward pass time: (cpu)", end - start)
 
-#count THEORETICAL MACs / FLOPs
-macs = count_mlp_macs(model, batch_size)
-flops = macs_to_flops(macs)
+#count THEORETICAL MACs / FLOPs (includes bias + activations in FLOP tally)
+breakdown = count_mlp_macs(
+    model,
+    batch_size,
+    include_activations=True,
+    return_breakdown=True,
+)
+macs = breakdown["macs"]
+flops = ops_breakdown_to_flops(breakdown)
 
 print("MACs:", macs)
 print("FLOPs:", flops)
