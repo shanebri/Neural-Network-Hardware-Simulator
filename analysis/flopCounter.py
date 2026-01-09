@@ -1,5 +1,7 @@
 import torch.nn as nn
 
+# simple counting utilities for linear layers and activations
+
 def count_linear_macs(layer: nn.Linear, batch_size: int = 1) -> int:
     """
     Count multiply-accumulate operations (MACs) for a Linear layer.
@@ -22,6 +24,7 @@ def count_linear_ops(
         macs, bias_ops
     """
     macs = count_linear_macs(layer, batch_size=batch_size)
+    # bias adds are optional and only counted if the layer has a bias term
     bias_ops = batch_size * layer.out_features if include_bias and layer.bias is not None else 0
     return macs, bias_ops
 
@@ -57,8 +60,10 @@ def count_model_ops(
     macs = 0
     bias_ops = 0
     activation_ops = 0
+    # record output sizes to estimate activation work later
     linear_output_sizes = []
 
+    # walk all submodules and count only Linear layers
     for module in model.modules():
         if isinstance(module, nn.Linear):
             m, b = count_linear_ops(module, batch_size=batch_size, include_bias=include_bias)
@@ -101,6 +106,7 @@ def count_mlp_macs(
         include_activations=include_activations,
         activation_ops_per_element=activation_ops_per_element,
     )
+    # expose total_ops for callers that want a full breakdown
     breakdown["total_ops"] = total_ops
     if return_breakdown:
         return breakdown
@@ -127,4 +133,5 @@ def ops_breakdown_to_flops(breakdown: dict, fma_cost: int = 2) -> int:
     macs = breakdown.get("macs", 0)
     bias_ops = breakdown.get("bias_ops", 0)
     activation_ops = breakdown.get("activation_ops", 0)
+    # count macs as fma_cost and add elementwise ops
     return macs * fma_cost + bias_ops + activation_ops

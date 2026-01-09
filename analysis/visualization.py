@@ -27,10 +27,12 @@ def build_runtime_table(
     """
     rows: List[dict] = []
     for batch in batch_sizes:
+        # count macs/flops once per batch size and reuse for each hardware config
         macs = count_mlp_macs(model, batch_size=batch)
         flops = macs_to_flops(macs)
 
         if include_cpu:
+            # cpu estimates use fp32 and cpu_specs defaults
             flop_rate = compute_flop_rate_cpu(cpu_specs)
             rows.append(
                 {
@@ -44,6 +46,7 @@ def build_runtime_table(
             )
 
         if include_m4:
+            # apple m4 uses the cpu estimation path with a different spec
             flop_rate = compute_flop_rate_cpu(m4_pro_specs)
             rows.append(
                 {
@@ -57,6 +60,7 @@ def build_runtime_table(
             )
 
         if include_gpu:
+            # gpu estimates are repeated for each requested precision
             for precision in gpu_precisions:
                 flop_rate = compute_flop_rate_gpu(gpu_specs, precision=precision)
                 rows.append(
@@ -71,6 +75,7 @@ def build_runtime_table(
                 )
 
     df = pd.DataFrame(rows)
+    # human-friendly label for plots and tables
     df["config"] = df["hardware"] + " (" + df["precision"] + ")"
     return df
 
@@ -102,6 +107,7 @@ def plot_runtime_vs_batch(
     ax.legend(title="Hardware (precision)")
     fig.tight_layout()
     output_path = Path(output_path)
+    # save and close the figure to avoid memory leaks in notebooks
     fig.savefig(output_path, dpi=200)
     plt.close(fig)
     return output_path
@@ -131,6 +137,7 @@ def plot_runtime_by_precision(
     ax.set_xticklabels(ax.get_xticklabels(), rotation=20, ha="right")
     fig.tight_layout()
     output_path = Path(output_path)
+    # save and close the figure to avoid memory leaks in notebooks
     fig.savefig(output_path, dpi=200)
     plt.close(fig)
     return output_path

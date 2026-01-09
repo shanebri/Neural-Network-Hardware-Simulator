@@ -11,16 +11,19 @@ from analysis.visualization import (
 from models.mlp import SimpleMLP
 
 
-
+# small cli for generating runtime plots
 def _parse_int_list(raw: str) -> list[int]:
+    # allow "1,8,32" style inputs
     return [int(v) for v in raw.split(",") if v.strip()]
 
 
 def _parse_str_list(raw: str) -> list[str]:
+    # allow "fp16,fp32" style inputs
     return [v.strip() for v in raw.split(",") if v.strip()]
 
 
 def main():
+    # set up cli arguments
     parser = argparse.ArgumentParser(
         description="Generate runtime estimate plots for the SimpleMLP."
     )
@@ -53,13 +56,16 @@ def main():
     )
     args = parser.parse_args()
 
+    # parse comma-separated args
     batch_sizes = _parse_int_list(args.batch_sizes)
     gpu_precisions = _parse_str_list(args.precisions)
     bar_batch_size = args.bar_batch_size or max(batch_sizes)
 
     output_dir = args.output_dir
+    # ensure output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # build the model and estimate table
     model = SimpleMLP()
     df = build_runtime_table(
         model=model,
@@ -67,17 +73,21 @@ def main():
         gpu_precisions=gpu_precisions,
     )
 
+    # output plot filenames
     line_path = output_dir / "runtime_vs_batch.png"
     bar_path = output_dir / f"runtime_by_precision_b{bar_batch_size}.png"
 
+    # generate plots
     plot_runtime_vs_batch(df, output_path=line_path)
     plot_runtime_by_precision(df, batch_size=bar_batch_size, output_path=bar_path)
 
     if args.write_csv:
+        # optionally dump the table for spreadsheet use
         csv_path = output_dir / "runtime_estimates.csv"
         df.to_csv(csv_path, index=False)
         print(f"Wrote estimates: {csv_path}")
 
+    # simple terminal feedback
     print(f"Saved line plot: {line_path}")
     print(f"Saved bar plot: {bar_path}")
 

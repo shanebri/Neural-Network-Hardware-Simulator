@@ -2,6 +2,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+# simple feedforward network used throughout the examples and tests
+
+
 #simple 4 layer (2 hidden) multilayer perceptron
 class SimpleMLP(nn.Module):
     """
@@ -22,6 +25,7 @@ class SimpleMLP(nn.Module):
 
     def __init__(self, input_dim=784, hidden1=128, hidden2=64, output_dim=10):
         super().__init__()
+        # define the linear layers that make up the network
         self.fc1 = nn.Linear(input_dim, hidden1)
         self.fc2 = nn.Linear(hidden1, hidden2)
         self.fc3 = nn.Linear(hidden2, output_dim)
@@ -32,6 +36,7 @@ class SimpleMLP(nn.Module):
     x -> fc1 -> ReLU -> fc2 -> ReLU -> fc3
     """
     def forward(self, x):
+        # apply linear -> relu twice, then output logits
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)

@@ -1,0 +1,95 @@
+{
+  "defaults": {
+    "cpu": "intel_i9_9900k",
+    "gpu": "nvidia_rtx_4070_ti",
+    "m4": "apple_m4_pro"
+  },
+  "cpus": {
+    "intel_i9_9900k": {
+      "name": "Intel Core i9-9900K",
+      "frequency": 3.6e9,
+      "flops_per_cycle": 16,
+      "core_count": 8,
+      "efficiency": 0.7
+    },
+    "intel_i9_13900k": {
+      "name": "Intel Core i9-13900K",
+      "frequency": 5.5e9,
+      "flops_per_cycle": 16,
+      "core_count": 8,
+      "efficiency": 0.65
+    },
+    "amd_ryzen_9_7950x": {
+      "name": "AMD Ryzen 9 7950X",
+      "frequency": 5.7e9,
+      "flops_per_cycle": 16,
+      "core_count": 16,
+      "efficiency": 0.65
+    },
+    "apple_m4_pro": {
+      "name": "Apple M4 Pro",
+      "frequency": 2.6e9,
+      "flops_per_cycle": 24,
+      "core_count": 10,
+      "efficiency": 0.65
+    }
+  },
+  "gpus": {
+    "nvidia_rtx_4070_ti": {
+      "name": "NVIDIA GeForce RTX 4070 Ti",
+      "theoretical_tflops": {
+        "fp16": 80.0,
+        "fp32": 40.0,
+        "fp64": 0.63
+      },
+      "efficiency": {
+        "fp16": 0.35,
+        "fp32": 0.35,
+        "fp64": 0.2
+      },
+      "allocation": 0.9
+    },
+    "nvidia_rtx_4090": {
+      "name": "NVIDIA GeForce RTX 4090",
+      "theoretical_tflops": {
+        "fp16": 165.2,
+        "fp32": 82.6,
+        "fp64": 1.29
+      },
+      "efficiency": {
+        "fp16": 0.35,
+        "fp32": 0.35,
+        "fp64": 0.2
+      },
+      "allocation": 0.9
+    },
+    "nvidia_a100_80gb": {
+      "name": "NVIDIA A100 80GB",
+      "theoretical_tflops": {
+        "fp16": 312.0,
+        "fp32": 19.5,
+        "fp64": 9.7
+      },
+      "efficiency": {
+        "fp16": 0.45,
+        "fp32": 0.4,
+        "fp64": 0.35
+      },
+      "allocation": 0.9
+    },
+    "amd_rx_7900_xtx": {
+      "name": "AMD Radeon RX 7900 XTX",
+      "theoretical_tflops": {
+        "fp16": 122.8,
+        "fp32": 61.4,
+        "fp64": 3.8
+      },
+      "efficiency": {
+        "fp16": 0.33,
+        "fp32": 0.33,
+        "fp64": 0.2
+      },
+      "allocation": 0.9
+    }
+  }
+}
