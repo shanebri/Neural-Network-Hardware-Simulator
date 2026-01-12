@@ -13,14 +13,13 @@ from analysis.hardware_estimates import (
 from models.hardware_specs import (
     cpu_specs,
     gpu_specs,
-    m4_pro_specs,
     get_cpu_spec,
     get_gpu_spec,
 )
 
 
 # public helpers for estimating and measuring model runtimes
-HardwareKey = Literal["cpu", "gpu", "m4"]
+HardwareKey = Literal["cpu", "gpu"]
 Precision = Literal["fp16", "fp32", "fp64"]
 
 NORMALIZED_SCHEMA_VERSION = "1.0"
@@ -45,9 +44,7 @@ def _resolve_hardware_spec(hardware: HardwareKey) -> dict:
         return cpu_specs
     if hardware == "gpu":
         return gpu_specs
-    if hardware == "m4":
-        return m4_pro_specs
-    raise ValueError(f"Unsupported hardware '{hardware}'. Use one of: cpu, gpu, m4.")
+    raise ValueError(f"Unsupported hardware '{hardware}'. Use one of: cpu, gpu.")
 
 
 def estimate_model_runtime(
@@ -77,8 +74,6 @@ def estimate_model_runtime(
     if hardware_profile:
         if hardware == "gpu":
             spec = get_gpu_spec(hardware_profile)
-        elif hardware == "m4":
-            spec = get_cpu_spec(hardware_profile)
         else:
             spec = get_cpu_spec(hardware_profile)
     else:
@@ -106,7 +101,7 @@ def estimate_model_runtime(
             spec, precision=precision, efficiency=efficiency, allocation=allocation
         )
     else:
-        # force fp32 for cpu/m4 paths
+        # force fp32 for cpu paths
         precision = "fp32"
         flop_rate = compute_flop_rate_cpu(
             spec, efficiency=efficiency, allocation=allocation or 1.0
@@ -145,7 +140,6 @@ def estimate_runtime_table(
     gpu_precisions: Iterable[str] = ("fp16", "fp32", "fp64"),
     include_gpu: bool = True,
     include_cpu: bool = True,
-    include_m4: bool = True,
 ):
     """
     Convenience wrapper returning a tidy DataFrame of runtime estimates.
@@ -159,7 +153,6 @@ def estimate_runtime_table(
         gpu_precisions=gpu_precisions,
         include_gpu=include_gpu,
         include_cpu=include_cpu,
-        include_m4=include_m4,
     )
 
 

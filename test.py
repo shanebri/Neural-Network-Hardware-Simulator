@@ -3,7 +3,7 @@ from models.mlp import SimpleMLP
 from analysis.flopCounter import count_mlp_macs, macs_to_flops, ops_breakdown_to_flops
 import time
 from analysis.hardware_estimates import compute_flop_rate_cpu, compute_flop_rate_gpu, estimate_runtime
-from models.hardware_specs import cpu_specs, gpu_specs, m4_pro_specs
+from models.hardware_specs import cpu_specs, get_cpu_spec, gpu_specs
 
 
 #define model and dummy input for model
@@ -50,7 +50,7 @@ cpu_rate = compute_flop_rate_cpu(cpu_specs)
 gpu_rate_fp16 = compute_flop_rate_gpu(gpu_specs, precision="fp16")
 gpu_rate_fp32 = compute_flop_rate_gpu(gpu_specs, precision="fp32")
 gpu_rate_fp64 = compute_flop_rate_gpu(gpu_specs, precision="fp64")
-apple_m4_rate = compute_flop_rate_cpu(m4_pro_specs)
+apple_m4_rate = compute_flop_rate_cpu(get_cpu_spec("apple_m4_pro"))
 
 print("CPU estimate: (Intel i9 9900k)", estimate_runtime(flops, cpu_rate), "seconds")
 print("GPU estimate FP16: (NVIDIA GeForce RTX 4070 Ti)", estimate_runtime(flops, gpu_rate_fp16), "seconds")

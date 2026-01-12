@@ -1,8 +1,7 @@
 {
   "defaults": {
     "cpu": "intel_i9_9900k",
-    "gpu": "nvidia_rtx_4070_ti",
-    "m4": "apple_m4_pro"
+    "gpu": "nvidia_rtx_4070_ti"
   },
   "cpus": {
     "intel_i9_9900k": {

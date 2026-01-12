@@ -55,7 +55,7 @@ def _validate_specs(specs: Dict[str, Any]) -> None:
     gpus = specs.get("gpus", {})
     if not defaults:
         raise ValueError("hardware_specs.json missing 'defaults'.")
-    for key in ("cpu", "gpu", "m4"):
+    for key in ("cpu", "gpu"):
         if key not in defaults:
             raise ValueError(f"hardware_specs.json defaults missing '{key}'.")
     if not cpus or not gpus:
@@ -68,8 +68,6 @@ def _validate_specs(specs: Dict[str, Any]) -> None:
         raise ValueError(f"Default CPU '{defaults['cpu']}' not found in cpus.")
     if defaults["gpu"] not in gpus:
         raise ValueError(f"Default GPU '{defaults['gpu']}' not found in gpus.")
-    if defaults["m4"] not in cpus:
-        raise ValueError(f"Default M4 '{defaults['m4']}' not found in cpus.")
 
 
 # load once at import time so callers can access defaults quickly
@@ -114,12 +112,6 @@ def get_default_gpu_spec() -> Dict[str, Any]:
     return get_gpu_spec(_DEFAULTS.get("gpu", ""))
 
 
-def get_default_m4_spec() -> Dict[str, Any]:
-    # pull the default apple silicon key from the config
-    return get_cpu_spec(_DEFAULTS.get("m4", ""))
-
-
 # module-level defaults used across the project
 cpu_specs = get_default_cpu_spec()
 gpu_specs = get_default_gpu_spec()
-m4_pro_specs = get_default_m4_spec()

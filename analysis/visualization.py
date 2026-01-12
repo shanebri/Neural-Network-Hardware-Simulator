@@ -11,7 +11,7 @@ from analysis.hardware_estimates import (
     compute_flop_rate_gpu,
     estimate_runtime,
 )
-from models.hardware_specs import cpu_specs, gpu_specs, m4_pro_specs
+from models.hardware_specs import cpu_specs, gpu_specs
 
 
 def build_runtime_table(
@@ -20,7 +20,6 @@ def build_runtime_table(
     gpu_precisions: Iterable[str] = ("fp16", "fp32", "fp64"),
     include_gpu: bool = True,
     include_cpu: bool = True,
-    include_m4: bool = True,
 ) -> pd.DataFrame:
     """
     Create a tidy table of runtime estimates across batch sizes and hardware/precisions.
@@ -37,20 +36,6 @@ def build_runtime_table(
             rows.append(
                 {
                     "hardware": cpu_specs["name"],
-                    "precision": "fp32",
-                    "batch_size": batch,
-                    "flops": flops,
-                    "flop_rate": flop_rate,
-                    "est_runtime": estimate_runtime(flops, flop_rate),
-                }
-            )
-
-        if include_m4:
-            # apple m4 uses the cpu estimation path with a different spec
-            flop_rate = compute_flop_rate_cpu(m4_pro_specs)
-            rows.append(
-                {
-                    "hardware": m4_pro_specs["name"],
                     "precision": "fp32",
                     "batch_size": batch,
                     "flops": flops,
